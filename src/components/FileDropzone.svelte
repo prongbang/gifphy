@@ -2,7 +2,7 @@
   import { open } from "@tauri-apps/api/dialog";
   import { convertFileSrc } from "@tauri-apps/api/tauri";
 
-  import { getFilename, getName } from "../utils/file-util";
+  import { getFilename, getFullname } from "../utils/file-util";
 
   export let extensions: string[];
   export let onSelected: any;
@@ -42,7 +42,7 @@
         file = {
           url: convertFileSrc(selected),
           path: selected,
-          name: getName(selected),
+          name: getFullname(selected),
           outputPath: selected.replaceAll(`/${filename}`, ""),
         };
         onSelected(file);

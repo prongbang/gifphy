@@ -1,15 +1,12 @@
 <script lang="ts">
   import { Navbar, NavBrand, GradientButton, Spinner } from "flowbite-svelte";
-  import { emit, listen } from "@tauri-apps/api/event";
+  import { Toast } from "flowbite-svelte";
+  import { CheckCircleSolid, CloseCircleSolid } from "flowbite-svelte-icons";
+  import { listen } from "@tauri-apps/api/event";
   import { invoke } from "@tauri-apps/api/tauri";
-  import { convertFileSrc } from "@tauri-apps/api/tauri";
   import FileDropzone from "./components/FileDropzone.svelte";
   import { videoExtensions } from "./utils/file-util";
-  import {
-    DONE_STATUS,
-    ERROR_STATUS,
-    IN_PROGRESS_STATUS,
-  } from "./utils/status";
+  import { DONE_STATUS, ERROR_STATUS } from "./utils/status";
 
   let fileSelected = {
     url: "",
@@ -27,7 +24,8 @@
     outputPath: "",
   };
 
-  let message = "";
+  let success = "";
+  let errors = "";
   let processing = false;
 
   interface Payload {
@@ -38,13 +36,11 @@
   }
 
   const onDone = (path: string) => {
-    message = "Success";
-    console.log(path);
+    success = path;
   };
 
   const onError = (error: string) => {
-    console.log(error);
-    message = error;
+    errors = error;
   };
 
   const unlisten = listen<Payload>("converter-event", (event) => {
@@ -54,17 +50,17 @@
       processing = false;
       setTimeout(() => {
         let outputFile = `${fileSelected.outputPath}/${fileSelected.name}.gif`;
-        onDone(convertFileSrc(outputFile));
+        onDone(outputFile);
       }, 250);
     } else if (payload.status == ERROR_STATUS) {
       processing = false;
-      onError(message);
+      onError(payload.error);
     }
   });
 
   async function converter() {
     if (!fileSelected.name || processing) return;
-    
+
     let options = {
       inputFile: fileSelected.path,
       outputPath: fileSelected.outputPath,
@@ -89,6 +85,28 @@
         Gifphy
       </span>
     </NavBrand>
+    <div
+      class="absolute top-4 left-1/2 transform -translate-x-1/2 flex items-center justify-center"
+    >
+      {#if success}
+        <Toast color="green">
+          <svelte:fragment slot="icon">
+            <CheckCircleSolid class="w-5 h-5" />
+            <span class="sr-only">Check icon</span>
+          </svelte:fragment>
+          Convert successfully.
+        </Toast>
+      {/if}
+      {#if errors}
+        <Toast color="red">
+          <svelte:fragment slot="icon">
+            <CloseCircleSolid class="w-5 h-5" />
+            <span class="sr-only">Error icon</span>
+          </svelte:fragment>
+          {errors}
+        </Toast>
+      {/if}
+    </div>
   </Navbar>
   <div class="flex flex-grow items-center justify-center">
     <div class="w-full container">

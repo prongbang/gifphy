@@ -9,3 +9,7 @@ export function getName(path: string): string {
     const filename = filenameWithExtension.split('.').shift();
     return filename || '';
 }
+
+export function getFullname(path: string): string {
+    return getFilename(path);
+}
