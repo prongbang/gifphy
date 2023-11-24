@@ -1,7 +1,7 @@
 use tauri::Window;
 use crate::status;
-use std::{io};
-use std::io::{BufRead};
+use std::io;
+use std::io::BufRead;
 use std::process::{Command, Stdio};
 use serde::{Serialize, Deserialize};
 use std::sync::Mutex;

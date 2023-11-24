@@ -38,42 +38,33 @@
   }
 
   const onDone = (path: string) => {
+    message = "Success";
     console.log(path);
-  };
-
-  const onProgress = (progress: number) => {
-    console.log(progress);
   };
 
   const onError = (error: string) => {
     console.log(error);
+    message = error;
   };
 
   const unlisten = listen<Payload>("converter-event", (event) => {
     let payload = event.payload;
     processing = true;
-    if (payload.status == IN_PROGRESS_STATUS) {
-      message = `${payload.progress}%`;
-      onProgress(payload.progress);
-    } else if (payload.status == DONE_STATUS) {
+    if (payload.status == DONE_STATUS) {
       processing = false;
-      message = "100%";
-      onProgress(100);
-
       setTimeout(() => {
-        onProgress(-1);
-        let outputFile = `${options.outputPath}/${fileSelected.name}.gif`;
+        let outputFile = `${fileSelected.outputPath}/${fileSelected.name}.gif`;
         onDone(convertFileSrc(outputFile));
       }, 250);
     } else if (payload.status == ERROR_STATUS) {
       processing = false;
-      message = `${payload.error}`;
-      onProgress(-1);
       onError(message);
     }
   });
 
   async function converter() {
+    if (!fileSelected.name || processing) return;
+    
     let options = {
       inputFile: fileSelected.path,
       outputPath: fileSelected.outputPath,
@@ -101,18 +92,16 @@
   </Navbar>
   <div class="flex flex-grow items-center justify-center">
     <div class="w-full container">
-      <FileDropzone onSelected={onSelected} extensions={videoExtensions} />
-      
-      {#if fileSelected.name}
-        <div class="mt-6 flex items-center justify-center">
-          <GradientButton on:click={converter} size="lg" color="tealToLime">
-            {#if processing}
-              <Spinner class="mr-3" size="4" color="primary" />
-            {/if}
-            Convert
-          </GradientButton>
-        </div>
-      {/if}
+      <FileDropzone {onSelected} extensions={videoExtensions} />
+
+      <div class="mt-6 flex items-center justify-center">
+        <GradientButton on:click={converter} size="lg" color="tealToLime">
+          {#if processing}
+            <Spinner class="mr-3" size="4" color="primary" />
+          {/if}
+          Convert
+        </GradientButton>
+      </div>
     </div>
   </div>
 </main>

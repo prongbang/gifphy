@@ -4,6 +4,13 @@ use tauri::Window;
 use crate::{command, ffmpeg, status};
 
 pub async fn execute<'a, R: tauri::Runtime>(window: &'a Window<R>, option: &'a options::Options) {
+    window.emit(command::CONVERTER_EVENT, command::Payload {
+        progress: 0.0,
+        status: status::IN_PROGRESS.to_string(),
+        logs: "".to_string(),
+        error: "".to_string(),
+    }).unwrap();
+
     let ffmpeg_path = ffmpeg::get_path(&window);
 
     // Grant permission ffmpeg
