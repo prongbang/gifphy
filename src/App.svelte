@@ -16,12 +16,7 @@
   };
 
   const onSelected = (file: any) => {
-    console.log("file:", file);
     fileSelected = file;
-  };
-
-  let options = {
-    outputPath: "",
   };
 
   let success = "";
@@ -33,6 +28,12 @@
     progress: number;
     logs: string;
     error: string;
+  }
+
+  const reset = () => {
+    success = "";
+    errors = "";
+    processing = false;
   }
 
   const onDone = (path: string) => {
@@ -60,6 +61,8 @@
 
   async function converter() {
     if (!fileSelected.name || processing) return;
+
+    reset();
 
     let options = {
       inputFile: fileSelected.path,
