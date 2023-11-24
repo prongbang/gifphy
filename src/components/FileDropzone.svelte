@@ -1,7 +1,6 @@
 <script lang="ts">
   import { open } from "@tauri-apps/api/dialog";
   import { convertFileSrc } from "@tauri-apps/api/tauri";
-  import FileDrop from "svelte-tauri-filedrop";
 
   import { getFilename, getName } from "../utils/file-util";
 
