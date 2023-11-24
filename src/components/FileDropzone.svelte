@@ -1,90 +1,89 @@
-<script>
-  import { Dropzone } from "flowbite-svelte";
+<script lang="ts">
+  import { open } from "@tauri-apps/api/dialog";
+  import { convertFileSrc } from "@tauri-apps/api/tauri";
+  import FileDrop from "svelte-tauri-filedrop";
 
-  export let onSelected;
-  export let onFileSelected;
+  import { getFilename, getName } from "../utils/file-util";
+
+  export let extensions: string[];
+  export let onSelected: any;
+
+  let name = "Choose a file";
 
   let file = {
     url: "",
     path: "",
+    name: "",
     outputPath: "",
   };
 
-  let value = [];
-  const dropHandle = (event) => {
-    value = [];
-    event.preventDefault();
-    if (event.dataTransfer.items) {
-      [...event.dataTransfer.items].forEach((item, i) => {
-        if (item.kind === "file") {
-          const file = item.getAsFile();
-          value.push(file.name);
-          value = value;
-        }
+  async function chooseFile() {
+    try {
+      // Open a selection dialog for image files
+      const selected = await open({
+        multiple: false,
+        filters: [
+          {
+            name: name,
+            extensions: extensions,
+          },
+        ],
       });
-    } else {
-      [...event.dataTransfer.files].forEach((file, i) => {
-        value = file.name;
-      });
+
+      if (Array.isArray(selected)) {
+        // user selected multiple files
+        console.log("user selected multiple files", selected);
+      } else if (selected === null) {
+        // user cancelled the selection
+        console.log("user cancelled the selection");
+      } else {
+        // user selected a single file
+        console.log("user selected a single file", selected);
+        let filename = getFilename(selected);
+        file = {
+          url: convertFileSrc(selected),
+          path: selected,
+          name: getName(selected),
+          outputPath: selected.replaceAll(`/${filename}`, ""),
+        };
+        onSelected(file);
+      }
+    } catch (e) {
+      console.error(e);
     }
-  };
-
-  const handleChange = (event) => {
-    const files = event.target.files;
-    if (files.length > 0) {
-      value.push(files[0].name);
-      value = value;
-    }
-  };
-
-  const showFiles = (files) => {
-    if (files.length === 1) return files[0];
-    let concat = "";
-    files.map((file) => {
-      concat += file;
-      concat += ",";
-      concat += " ";
-    });
-
-    if (concat.length > 40) concat = concat.slice(0, 40);
-    concat += "...";
-    return concat;
-  };
+  }
 </script>
 
-<Dropzone
-  id="dropzone"
-  on:drop={dropHandle}
-  on:dragover={(event) => {
-    event.preventDefault();
-  }}
-  on:change={handleChange}
+<button
+  on:click={chooseFile}
+  class="flex flex-col justify-center items-center w-full h-64 bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
 >
-  <svg
-    aria-hidden="true"
-    class="mb-3 w-10 h-10 text-gray-400"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-    ><path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-    /></svg
-  >
-  {#if value.length === 0}
+  <div class="flex flex-col items-center">
+    <svg
+      aria-hidden="true"
+      class="mb-3 w-10 h-10 text-gray-400"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      ><path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+      ></path></svg
+    >
     <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-      <span class="font-semibold">Click to upload</span> or drag and drop
+      <span class="font-semibold">Click to upload</span>
     </p>
     <p class="text-xs text-gray-500 dark:text-gray-400">
-      MOV, MP4, AVI, MKV, WMV, FLV, WebM, 3GP, MPEG, OGG
+      {extensions.join(", ").toUpperCase()}
     </p>
-  {:else}
-    <p>{showFiles(value)}</p>
-  {/if}
-</Dropzone>
+    {#if file.name}
+      <p>{file.name}</p>
+    {/if}
+  </div>
+</button>
 
 <style scoped>
 </style>
