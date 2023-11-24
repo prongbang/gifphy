@@ -7,8 +7,8 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "gifphy",
-    "version": "0.0.0"
+    "productName": "Gifphy",
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -41,7 +41,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "com.wachasit.gifphy",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -63,7 +63,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "gifphy",
+        "title": "Gifphy",
         "width": 800,
         "height": 600
       }
