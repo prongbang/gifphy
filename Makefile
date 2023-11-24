@@ -19,4 +19,4 @@ check:
 	bun run check
 
 tauri:
-	bun run tauri
+	bun run tauri dev

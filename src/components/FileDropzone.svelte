@@ -1,6 +1,15 @@
 <script>
   import { Dropzone } from "flowbite-svelte";
 
+  export let onSelected;
+  export let onFileSelected;
+
+  let file = {
+    url: "",
+    path: "",
+    outputPath: "",
+  };
+
   let value = [];
   const dropHandle = (event) => {
     value = [];
@@ -78,5 +87,4 @@
 </Dropzone>
 
 <style scoped>
-  
 </style>
