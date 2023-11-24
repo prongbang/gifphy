@@ -25,7 +25,7 @@ pub struct Value {
     pub status: String,
 }
 
-pub fn command<F: FnMut(Value), R: tauri::Runtime>(window: &Window<R>, stop_event: &str, execute_path: &str, args: Vec<&str>, mut on_value: F) {
+pub fn command<F: FnMut(Value), R: tauri::Runtime>(window: &Window<R>, stop_event: &str, execute_path: &str, args: Vec<String>, mut on_value: F) {
     let cmd = Command::new(execute_path)
         .args(args)
         .stdout(Stdio::piped())

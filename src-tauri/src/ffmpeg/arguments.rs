@@ -1,30 +1,30 @@
 use crate::converter::options;
 
-pub fn gen_palette(option: &options::Options) -> Vec<&str> {
+pub fn gen_palette(option: &options::Options) -> Vec<String> {
     let vf = format!("fps={},scale={}:-1:flags={}", &option.fps, &option.scale, &option.flags_gen);
-    let vf_clone = vf.clone();
+
     let args = vec![
-        "-y",
-        "-ss", &option.start_at_second,
-        "-t", &option.length_of_gif_video,
-        "-i", &option.input_file,
-        "-vf", &vf_clone,
-        &option.palette_file,
+        "-y".to_string(),
+        "-ss".to_string(), option.start_at_second.clone(),
+        "-t".to_string(), option.length_of_gif_video.clone(),
+        "-i".to_string(), option.input_file.clone(),
+        "-vf".to_string(), vf.clone(),
+        option.palette_file.clone(),
     ];
+
     args
 }
 
-pub fn use_palette(option: &options::Options) -> Vec<&str> {
+pub fn use_palette(option: &options::Options) -> Vec<String> {
     let fc = format!(r#""fps={},scale={}:-1:flags={}""#, &option.fps, &option.scale, &option.flags_gen);
-    let fc_clone = fc.clone();
 
-    let args: Vec<&str> = vec![
-        "-ss", &option.start_at_second,
-        "-t", &option.length_of_gif_video,
-        "-i", &option.input_file,
-        "-i", &option.palette_file,
-        "-filter_complex", &fc_clone,
-        &option.output_file,
+    let args = vec![
+        "-ss".to_string(), option.start_at_second.clone(),
+        "-t".to_string(), option.length_of_gif_video.clone(),
+        "-i".to_string(), option.input_file.clone(),
+        "-i".to_string(), option.palette_file.clone(),
+        "-filter_complex".to_string(), fc.clone(),
+        option.output_file.clone(),
     ];
 
     args
