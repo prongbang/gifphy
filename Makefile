@@ -1,3 +1,8 @@
+initial_tailwind:
+	bun install flowbite-svelte flowbite -d
+	bun install tailwindcss -d
+	npx svelte-add@latest tailwindcss
+
 install:
 	bun install 
 
