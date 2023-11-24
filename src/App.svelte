@@ -18,8 +18,8 @@
     <div class="w-full container">
       <FileDropzone />
 
-      <div class="mt-4 flex items-center justify-center">
-        <GradientButton color="tealToLime">
+      <div class="mt-6 flex items-center justify-center">
+        <GradientButton size="lg" color="tealToLime">
           {#if (false)}
           <Spinner class="mr-3" size="4" color="primary" /> 
           {/if}
