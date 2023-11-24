@@ -59,6 +59,11 @@ pub fn chmod(path: &str) -> io::Result<()> {
 }
 
 pub fn command<F: FnMut(Value), R: tauri::Runtime>(window: &Window<R>, stop_event: &str, execute_path: &str, args: Vec<String>, mut on_value: F) {
+    #[cfg(debug_assertions)]
+    {
+        println!("{} {:?}", &execute_path, &args);
+    }
+
     let cmd = Command::new(execute_path)
         .args(args)
         .stdout(Stdio::piped())

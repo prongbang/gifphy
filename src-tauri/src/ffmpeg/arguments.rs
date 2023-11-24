@@ -16,7 +16,7 @@ pub fn gen_palette(option: &options::Options) -> Vec<String> {
 }
 
 pub fn use_palette(option: &options::Options) -> Vec<String> {
-    let fc = format!(r#""fps={},scale={}:-1:flags={}""#, &option.fps, &option.scale, &option.flags_gen);
+    let fc = format!("fps={},scale={}:-1:flags={}", &option.fps, &option.scale, &option.flags_gen);
 
     let args = vec![
         "-ss".to_string(), option.start_at_second.clone(),
