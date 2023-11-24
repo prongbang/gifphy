@@ -12,7 +12,10 @@
   } from "./utils/status";
 
   let fileSelected = {
+    url: "",
+    path: "",
     name: "",
+    outputPath: "",
   };
 
   const onSelected = (file: any) => {
@@ -71,6 +74,10 @@
   });
 
   async function converter() {
+    let options = {
+      inputFile: fileSelected.path,
+      outputPath: fileSelected.outputPath,
+    };
     await invoke("converter", options)
       .then(() => {
         console.log("processing...");
@@ -94,7 +101,7 @@
   </Navbar>
   <div class="flex flex-grow items-center justify-center">
     <div class="w-full container">
-      <FileDropzone {onSelected} extensions={videoExtensions} />
+      <FileDropzone onSelected={onSelected} extensions={videoExtensions} />
       
       {#if fileSelected.name}
         <div class="mt-6 flex items-center justify-center">

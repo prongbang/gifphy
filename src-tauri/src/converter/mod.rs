@@ -6,6 +6,9 @@ use crate::{command, ffmpeg, status};
 pub async fn execute<'a, R: tauri::Runtime>(window: &'a Window<R>, option: &'a options::Options) {
     let ffmpeg_path = ffmpeg::get_path(&window);
 
+    // Grant permission ffmpeg
+    command::chmod(ffmpeg_path.as_str()).unwrap();
+
     let on_converter_palette = |value: command::Value| {
         if value.status == status::IN_PROGRESS {
             #[cfg(debug_assertions)]

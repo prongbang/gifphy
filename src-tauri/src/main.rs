@@ -8,6 +8,7 @@ mod ffmpeg;
 mod command;
 mod resources;
 mod status;
+mod platform;
 
 fn main() {
     tauri::Builder::default()

@@ -1,6 +1,7 @@
 pub mod arguments;
 
 use tauri::Window;
+use crate::platform::os::{LINUX, MACOS, WINDOWS};
 use crate::{command, resources};
 use crate::converter::options::Options;
 

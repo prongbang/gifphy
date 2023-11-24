@@ -25,6 +25,39 @@ pub struct Value {
     pub status: String,
 }
 
+
+#[cfg(unix)]
+fn run_command(command: &str) -> io::Result<std::process::ExitStatus> {
+    Command::new("sh")
+        .arg("-c")
+        .arg(command)
+        .status()
+}
+
+#[cfg(windows)]
+fn run_command(command: &str) -> io::Result<std::process::ExitStatus> {
+    Command::new("cmd")
+        .arg("/C")
+        .arg(command)
+        .status()
+}
+
+pub fn chmod(path: &str) -> io::Result<()> {
+    let command_str = format!("chmod -R 755 {}", path);
+    let status = run_command(&command_str)?;
+
+    #[cfg(debug_assertions)]
+    {
+        if status.success() {
+            println!("Command executed successfully");
+        } else {
+            eprintln!("Command failed with exit code: {:?}", status.code());
+        }
+    }
+
+    Ok(())
+}
+
 pub fn command<F: FnMut(Value), R: tauri::Runtime>(window: &Window<R>, stop_event: &str, execute_path: &str, args: Vec<String>, mut on_value: F) {
     let cmd = Command::new(execute_path)
         .args(args)
