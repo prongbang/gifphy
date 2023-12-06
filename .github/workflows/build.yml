@@ -39,6 +39,7 @@ jobs:
           workspaces: './src-tauri -> target'
 
       - name: Sync node version and setup cache
+        if: matrix.platform != 'windows-latest'
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: 1.0.14
